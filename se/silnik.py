@@ -66,6 +66,9 @@ def wnioskuj_wstecz(baza, cel, fakty, zapytaj, slad=None, powod=None):
 
     # TODO 3: jeśli nie ma reguł (cel to dana wejściowa), zapytaj użytkownika:
     #         fakty[cel] = zapytaj(cel, powod), a potem zwróć fakty[cel].
+    if not reguly:
+        fakty[cel] = zapytaj(cel, powod)
+        return fakty[cel]
 
     for regula in reguly:
         spelniona = True
@@ -73,6 +76,10 @@ def wnioskuj_wstecz(baza, cel, fakty, zapytaj, slad=None, powod=None):
             # TODO 4: ustal atrybut tą samą funkcją (rekurencja):
             #         znana = wnioskuj_wstecz(baza, atrybut, fakty, zapytaj, slad, regula)
             #         Jeśli znana jest None albo warunek nie jest spełniony: spelniona = False i break.
+            znana = wnioskuj_wstecz(baza, atrybut, fakty, zapytaj, slad, regula)
+            if znana is None or not OPERATORY[op](znana, wartosc):
+                spelniona = False
+                break
             pass
         if spelniona:
             fakty[cel] = regula["to"][1]
