@@ -112,8 +112,9 @@ def zapytaj_konsola(baza):
 
 if __name__ == "__main__":
     # Część 5 instrukcji: tu podmieniasz plik bazy i przykładowe fakty na swoje.
-    PLIK_BAZY = Path(__file__).parent.parent / "wiedza" / "kawa.json"
-    FAKTY = {"temperatura": 18, "pora_dnia": "rano", "dodatek": "brak", "kofeina_ok": "tak"}
+    PLIK_BAZY = Path(__file__).parent.parent / "wiedza" / "konfigurator_komputera.json"
+    # FAKTY = {"temperatura": 18, "pora_dnia": "rano", "dodatek": "brak", "kofeina_ok": "tak"}
+    FAKTY = {"zastosowanie": "gry", "mobilnosc": "stacjonarny", "priorytet": "wydajnosc", "budzet": 3000}
 
     baza = wczytaj_baze(PLIK_BAZY)
     cel = baza["cel"]
