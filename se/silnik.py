@@ -23,6 +23,7 @@ def warunek_spelniony(warunek, fakty):
 def regula_spelniona(regula, fakty):
     # TODO 1: zwróć True, jeśli WSZYSTKIE warunki z regula["jesli"] są spełnione.
     # Podpowiedź: funkcja all() i warunek_spelniony().
+    return all(warunek_spelniony(warunek, fakty) for warunek in regula["jesli"])
     raise NotImplementedError
 
 
@@ -39,6 +40,10 @@ def wnioskuj_w_przod(baza, fakty):
             #   - dopisz fakt,
             #   - dopisz id reguły do śladu,
             #   - ustaw zmiana = True (trzeba przejść po regułach jeszcze raz).
+            if atrybut not in fakty and regula_spelniona(regula, fakty):
+                fakty[atrybut] = wartosc
+                slad.append(regula["id"])
+                zmiana = True            
             pass
     return fakty, slad
 
