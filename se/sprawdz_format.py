@@ -201,5 +201,5 @@ def sprawdz(sciezka):
 
 
 if __name__ == "__main__":
-    plik = sys.argv[1] if len(sys.argv) > 1 else Path(__file__).parent.parent / "wiedza" / "moja_dziedzina.json"
+    plik = sys.argv[1] if len(sys.argv) > 1 else Path(__file__).parent.parent / "wiedza" / "konfigurator_komputera.json"
     sys.exit(sprawdz(plik))
