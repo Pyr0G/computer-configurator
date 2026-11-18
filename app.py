@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent / "se"))
 from silnik import coto, wczytaj_baze, wnioskuj_w_przod, wyjasnij_jak  # noqa: E402
 from weryfikacja import weryfikuj  # noqa: E402
 
-PLIK_BAZY = Path(__file__).parent / "wiedza" / "kawa.json"  # TODO 1: podmień na swoją bazę
+PLIK_BAZY = Path(__file__).parent / "wiedza" / "konfigurator_komputera.json"  # TODO 1: podmień na swoją bazę
 baza = wczytaj_baze(PLIK_BAZY)
 
 st.set_page_config(page_title=baza["nazwa"])
@@ -29,6 +29,8 @@ with st.form("konsultacja"):
             lo, hi = opis.get("zakres", [-100, 100])
             fakty[nazwa] = st.slider(opis["pytanie"], lo, hi, (lo + hi) // 2)
         # TODO 2: dla typu "wybor" dodaj st.radio z listą opis["wartosci"]
+        elif opis["typ"] == "wybor":
+            fakty[nazwa] = st.radio(opis["pytanie"], opis["wartosci"], horizontal=True)
     wyslano = st.form_submit_button("Doradź")
 
 if wyslano:
@@ -36,4 +38,12 @@ if wyslano:
     cel = wynik.get(baza["cel"])
     # TODO 3: jeśli cel is None — st.error z informacją, że brakuje reguły;
     #         w przeciwnym razie st.success z wynikiem i st.info z opisem coto(baza, slad).
+    if cel is None:
+        st.error("Brakuje reguły.")
+    else:
+        st.success(f"Wynik: {cel}")
+        st.info(f"Co to jest? {coto(baza, slad)}")
     # TODO 4: w st.expander("Jak do tego doszedłem?") wypisz kroki z wyjasnij_jak(baza, slad).
+    with st.expander("Jak do tego doszedłem?"):
+        for krok in wyjasnij_jak(baza, slad):
+            st.text(krok)

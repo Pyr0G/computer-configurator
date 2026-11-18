@@ -97,6 +97,15 @@ def zapytaj_konsola(baza):
         podpowiedz = f" ({'/'.join(opis['wartosci'])})" if "wartosci" in opis else ""
         while True:
             odp = input(f"{opis.get('pytanie', atrybut)}{podpowiedz} ").strip()
+            if odp == "?":
+                if powod is not None:
+                    print(
+                        "Pytam, bo sprawdzam regułę:",
+                        opisz_regule(powod),
+                    )
+                else:
+                    print("Pytam, aby ustalić wartość:", atrybut)
+                continue
             if opis.get("typ") == "liczba":
                 try:
                     return float(odp.replace(",", "."))
@@ -109,6 +118,28 @@ def zapytaj_konsola(baza):
             return odp
     return zapytaj
 
+def opisz_regule(regula): # gotowe
+    warunki = " ORAZ ".join(f"{a} {op} {w!r}"
+        for a, op, w in regula["jesli"])
+    atrybut, wartosc = regula["to"]
+    return f"{regula['id']}: JEŚLI {warunki} TO {atrybut} = {wartosc!r}"
+
+def wyjasnij_jak(baza, slad): # napisz sam
+    po_id = {r["id"]: r for r in baza["reguly"]}
+    kroki = []
+    for nr, id_reguly in enumerate(slad, start=1):
+        regula = po_id[id_reguly]
+        kroki.append(f"{nr}. {opisz_regule(regula)}\n"f"   → {regula.get('metafora', '')}")
+    return kroki
+
+def coto(baza, slad): # gotowe
+    # pole coto ostatniej reguły śladu, która je ma
+    po_id = {r["id"]: r for r in baza["reguly"]}
+    for id_reguly in reversed(slad):
+        opis = po_id[id_reguly].get("coto")
+        if opis:
+            return opis
+    return "Brak opisu."
 
 if __name__ == "__main__":
     # Część 5 instrukcji: tu podmieniasz plik bazy i przykładowe fakty na swoje.
@@ -127,3 +158,8 @@ if __name__ == "__main__":
     slad = []
     print("Polecam:", wnioskuj_wstecz(baza, cel, {}, zapytaj_konsola(baza), slad))
     print("Reguły:", " -> ".join(slad))
+    
+    print("\nJak do tego doszedłem?")
+    for krok in wyjasnij_jak(baza, slad):
+        print(krok)
+    print("\nCo to jest?", coto(baza, slad))
